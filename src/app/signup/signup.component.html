@@ -1,1 +1,352 @@
-<p>signup works!</p>
+<div class="wrapper">
+  <div class="container">
+    <mat-card>
+      <mat-card-header>
+        <mat-horizontal-stepper class="stepper" [selectedIndex]="selectedIndex">
+          <mat-step label="Fill out contact info" [editable]="false"></mat-step>
+          <mat-step label="Sign Terms of Service" [editable]="false"></mat-step>
+          <mat-step label="Done" [editable]="false"></mat-step>
+        </mat-horizontal-stepper>
+      </mat-card-header>
+      <mat-card-content>
+        <form
+          [formGroup]="signupForm"
+          (ngSubmit)="onSubmit()"
+          class="form-block"
+          id="signup-form"
+          *ngIf="(user$ | async) === null"
+        >
+          <div class="let-column">
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>First Name</mat-label>
+              <input matInput placeholder="Enter your name" formControlName="first_name" required />
+              <mat-icon
+                matPrefix
+                [ngClass]="{
+                  'error-icon': firstName?.invalid && firstName?.dirty
+                }"
+                >person_outline
+              </mat-icon>
+              <mat-error *ngIf="firstName?.invalid">First name isn't filled out</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>Last Name</mat-label>
+              <input
+                matInput
+                placeholder="Enter your last name"
+                formControlName="last_name"
+                required
+              />
+              <mat-icon
+                matPrefix
+                [ngClass]="{
+                  'error-icon': lastName?.invalid && lastName?.dirty
+                }"
+                >person_outline
+              </mat-icon>
+              <mat-error *ngIf="lastName?.invalid">Second name isn't filled out</mat-error>
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              subscriptSizing="dynamic"
+              class="username-field"
+              hideRequiredMarker
+            >
+              <mat-label>Username</mat-label>
+              <input
+                matInput
+                placeholder="Enter your username"
+                formControlName="username"
+                required
+              />
+              <mat-icon
+                class="material-icons-outlined"
+                matPrefix
+                [ngClass]="{
+                  'error-icon': username?.invalid && username?.dirty
+                }"
+                >account_circle
+              </mat-icon>
+              <mat-error *ngIf="username?.hasError('required')" class="no-username"
+                >Username isn't filled out
+              </mat-error>
+              <mat-error *ngIf="username?.hasError('pattern')" class="username-invalid"
+                >Should start with a Latin character and contain between 4 and 16 symbols. Only
+                Latin characters, digits, "-" or "_" are allowed
+              </mat-error>
+              <mat-error *ngIf="username?.hasError('usernameExists')" class="username-invalid"
+                >A customer with such username already exists, please choose a different username
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              subscriptSizing="dynamic"
+              class="password-field"
+              hideRequiredMarker
+            >
+              <mat-label>Password</mat-label>
+              <input
+                matInput
+                [type]="hidePasswords.password ? 'password' : 'text'"
+                placeholder="Enter your password"
+                formControlName="password"
+                required
+              />
+              <button
+                mat-icon-button
+                matPrefix
+                type="button"
+                (click)="togglePasswordsHiding('password')"
+              >
+                <mat-icon
+                  class="material-icons-outlined"
+                  matPrefix
+                  [ngClass]="{
+                    'error-icon': password?.invalid && password?.dirty
+                  }"
+                  >{{ hidePasswords.password ? 'visibility_off' : 'visibility' }}</mat-icon
+                >
+              </button>
+              <mat-hint align="start" *ngIf="!password?.dirty"
+                >Should be at least 8 symbols long. Must contain at least one lower case (a-z), one
+                upper case letter (A-Z), one decimal digit (0-9), and one special character
+                (〜,!,@,#,%,..)
+              </mat-hint>
+              <mat-error *ngIf="password?.hasError('required')" class="no-password"
+                >Password isn't filled out
+              </mat-error>
+              <mat-error *ngIf="password?.hasError('pattern')" class="password-invalid"
+                >Should be at least 8 symbols long. Must contain at least one lower case (a-z), one
+                upper case letter (A-Z), one decimal digit (0-9), and one special character
+                (〜,!,@,#,%,..)
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>Confirm password</mat-label>
+              <input
+                matInput
+                [type]="hidePasswords.confirmation ? 'password' : 'text'"
+                placeholder="Enter your password"
+                formControlName="confirm_password"
+                required
+              />
+              <button
+                mat-icon-button
+                matPrefix
+                type="button"
+                (click)="togglePasswordsHiding('confirmation')"
+              >
+                <mat-icon
+                  class="material-icons-outlined"
+                  matPrefix
+                  [ngClass]="{
+                    'error-icon': confirmPassword?.invalid && confirmPassword?.dirty
+                  }"
+                  >{{ hidePasswords.confirmation ? 'visibility_off' : 'visibility' }}</mat-icon
+                >
+              </button>
+              <mat-error *ngIf="confirmPassword?.hasError('required')"
+                >Confirmation password isn't filled out
+              </mat-error>
+              <mat-error *ngIf="confirmPassword?.hasError('passwordMismatch')"
+                >The password fields do not match
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>Email</mat-label>
+              <input matInput placeholder="Enter your email" formControlName="email" required />
+              <mat-icon
+                class="material-icons-outlined"
+                matPrefix
+                [ngClass]="{
+                  'error-icon': email?.invalid && email?.dirty
+                }"
+                >email
+              </mat-icon>
+              <mat-error *ngIf="email?.hasError('required')">Email isn't filled out</mat-error>
+              <mat-error *ngIf="email?.hasError('pattern')">The email isn't valid</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>Phone number</mat-label>
+              <input
+                matInput
+                type="text"
+                formControlName="phone"
+                [maxLength]="15"
+                required
+                (focusin)="addPlus()"
+                (blur)="hidePlus()"
+                (keydown)="enterNumbersOnly($event)"
+                (input)="inputHandler($event)"
+                id="phone-input"
+              />
+              <label
+                class="placeholder"
+                for="phone-input"
+                [ngClass]="{
+                  visible: phone!.value!.length === 1
+                }"
+                >Phone number with country code</label
+              >
+              <mat-icon
+                class="material-icons-outlined"
+                matPrefix
+                [ngClass]="{
+                  'error-icon': phone?.invalid && phone?.dirty
+                }"
+                >phone
+              </mat-icon>
+              <mat-error *ngIf="phone?.hasError('required')"
+                >Phone number isn't filled out
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="right-column">
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>Company Name</mat-label>
+              <input
+                matInput
+                placeholder="Enter your company name"
+                formControlName="company_name"
+                required
+              />
+              <mat-icon
+                matPrefix
+                [ngClass]="{
+                  'error-icon': companyName?.invalid && companyName?.dirty
+                }"
+                >business
+              </mat-icon>
+              <mat-error *ngIf="companyName?.hasError('required')"
+                >Company name isn't filled out
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>{{ countriesLoading ? 'Loading...' : 'Country' }}</mat-label>
+              <mat-select formControlName="country" required (selectionChange)="getStates($event)">
+                <mat-option *ngFor="let country of countries" [value]="country.iso_3166_1_a2">{{
+                  country.name
+                }}</mat-option>
+              </mat-select>
+              <mat-icon matPrefix>public</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>Street address 1</mat-label>
+              <input
+                matInput
+                placeholder="Enter the 1st line of your address"
+                formControlName="street_address_1"
+                required
+              />
+              <mat-icon
+                class="material-icons-outlined"
+                matPrefix
+                [ngClass]="{
+                  'error-icon': streetAddress?.invalid && streetAddress?.dirty
+                }"
+                >location_on
+              </mat-icon>
+              <mat-error *ngIf="streetAddress?.hasError('required')"
+                >Street address isn't filled out
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Street address 2</mat-label>
+              <input
+                matInput
+                placeholder="Enter the 2nd line of your address"
+                formControlName="street_address_2"
+              />
+              <mat-icon class="material-icons-outlined" matPrefix>location_on</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>City</mat-label>
+              <input matInput placeholder="Enter your city" formControlName="city" required />
+              <mat-icon
+                matPrefix
+                [ngClass]="{
+                  'error-icon': city?.invalid && city?.dirty
+                }"
+                >apartment
+              </mat-icon>
+              <mat-error *ngIf="city?.hasError('required')">City isn't filled out</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ statesLoading ? 'Loading...' : 'State' }}</mat-label>
+              <mat-select formControlName="state">
+                <mat-option *ngFor="let state of states" [value]="state.name">{{
+                  state.name
+                }}</mat-option>
+              </mat-select>
+              <mat-icon class="material-icons-outlined" matPrefix>flag</mat-icon>
+            </mat-form-field>
+            <mat-form-field appearance="outline" hideRequiredMarker>
+              <mat-label>ZIP</mat-label>
+              <input
+                matInput
+                placeholder="Enter your zip-code"
+                formControlName="zip"
+                maxlength="10"
+                required
+              />
+              <mat-icon
+                class="material-icons-outlined"
+                matPrefix
+                [ngClass]="{
+                  'error-icon': zip?.invalid && zip?.dirty
+                }"
+                >location_on
+              </mat-icon>
+              <mat-hint align="start"
+                >May only contain digits, letters, dash ("-") and spaces
+              </mat-hint>
+              <mat-error *ngIf="zip?.hasError('required')">ZIP isn't filled out</mat-error>
+              <mat-error *ngIf="zip?.hasError('pattern')"
+                >May only contain digits, letters, dash ("-") and spaces
+              </mat-error>
+            </mat-form-field>
+            <div class="captcha">
+              <re-captcha
+                (resolved)="resolved($event)"
+                siteKey="6Lev6SIlAAAAAFPOr1hawQLFApZK9jIrJUM84nyf"
+              ></re-captcha>
+            </div>
+          </div>
+        </form>
+        <div class="done-block" *ngIf="user$ | async; let user">
+          <p>Dear {{ user.first_name }}</p>
+          <p>
+            Thank you for signing up for Add-on Mart. Your Add-on Mart account
+            <b>{{ user.username }}</b> has been created.
+          </p>
+          <p>
+            Click "Login" to go to the Service Management Portal and choose your Add-on Mart
+            modules.
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <button
+      *ngIf="(user$ | async) === null"
+      mat-raised-button
+      color="primary"
+      class="submit-button"
+      form="signup-form"
+      type="submit"
+      [disabled]="signupForm.invalid || signupForm.pending || !captchaResolved"
+    >
+      Next
+    </button>
+    <button
+      *ngIf="user$ | async"
+      mat-raised-button
+      color="primary"
+      class="submit-button"
+      type="button"
+      routerLink="/"
+    >
+      Login
+    </button>
+  </div>
+</div>

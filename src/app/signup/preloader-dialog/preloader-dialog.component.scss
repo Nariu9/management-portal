@@ -1,0 +1,11 @@
+.preloader {
+  padding: 30px;
+  display: flex;
+  gap: 20px;
+
+  @media screen and (max-width: 740px){
+    text-align: center;
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+}

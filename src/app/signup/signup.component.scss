@@ -1,0 +1,181 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+
+  .container {
+    max-width: 1170px;
+    width: 100%;
+    position: absolute;
+    top: 125px;
+    @media screen and (max-width: 1225px) {
+      width: 90%;
+    }
+
+    .stepper {
+      width: 100%;
+    }
+
+    .form-block {
+      margin: 0 auto;
+      width: 70%;
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      justify-content: space-between;
+      @media screen and (max-width: 1000px) {
+        flex-direction: column;
+        align-items: center;
+        @media (max-width: 768px) {
+          width: 80%;
+        }
+        @media (max-width: 605px) {
+          width: 95%;
+        }
+        @media (max-width: 490px) {
+          width: 97%;
+        }
+      }
+
+      .let-column, .right-column {
+        display: flex;
+        flex-direction: column;
+        width: 44%;
+        gap: 10px;
+        @media screen {
+          @media (max-width: 1000px) {
+            width: 80%;
+          }
+          @media (max-width: 490px) {
+            width: 100%;
+          }
+        }
+
+        mat-form-field {
+
+          &:focus-within {
+
+            mat-icon {
+              color: #3f51b5;
+            }
+
+            .error-icon {
+              color: #f44336;
+            }
+
+            mat-hint {
+              display: block;
+              font-size: 13px;
+              color: rgb(176, 176, 176);
+            }
+          }
+
+          mat-hint {
+            display: none;
+          }
+
+          mat-error {
+            font-size: 13px;
+          }
+
+          mat-icon {
+            //color: #757575;
+            font-size: 25px;
+          }
+        }
+      }
+
+      .let-column {
+
+        .password-field {
+          margin-bottom: 20px;
+
+          &:focus-within:has(mat-hint), &:has(.password-invalid) {
+            margin-bottom: 0;
+          }
+
+          &:has(.no-password) {
+            margin-bottom: 1px;
+          }
+        }
+
+        .username-field {
+          margin-bottom: 20px;
+
+          &:has(.no-username) {
+            margin-bottom: 1px;
+          }
+
+          &:has(.username-invalid) {
+            margin-bottom: 0;
+          }
+        }
+
+        .placeholder {
+          display: none;
+        }
+
+        .placeholder.visible {
+          display: block;
+          position: absolute;
+          top: 17px;
+          left: 12px;
+          pointer-events: none;
+          opacity: 0.5;
+          transition: opacity 0.2s ease-out;
+        }
+      }
+
+      .right-column {
+
+        .captcha {
+          margin-top: 10px;
+          align-self: flex-end;
+          @media screen and (max-width: 490px) {
+            align-self: auto;
+          }
+        }
+      }
+    }
+
+    .submit-button {
+      display: block;
+      margin: 35px auto;
+      width: 120px;
+      height: 60px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .done-block {
+      margin: 61px 0 78px;
+      padding: 0 23px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.error-icon {
+  color: #f44336;
+}
+
+:host ::ng-deep .mat-mdc-form-field-hint-wrapper {
+  display: block;
+}
+
+:host ::ng-deep .mat-step-header {
+  cursor: auto;
+  pointer-events: none;
+}
+
+//to hide number input arrows in Chrome, Safari, Edge, Opera
+input[matinput]::-webkit-outer-spin-button,
+input[matinput]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+//to hide number input arrows in Firefox
+input[matinput][type=number] {
+  -moz-appearance: textfield;
+}

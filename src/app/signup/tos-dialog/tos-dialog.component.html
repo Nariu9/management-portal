@@ -1,0 +1,20 @@
+<h3 mat-dialog-title>
+  Please e-sign the Terms of Service (ToS), which will outline all general aspects of the service.
+</h3>
+<mat-dialog-content>
+  <div class="content">
+    <iframe [src]="data.url | safeURL"></iframe>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="buttons-block">
+  <button mat-raised-button type="button" [mat-dialog-close]="false">Back</button>
+  <button
+    mat-raised-button
+    color="primary"
+    type="button"
+    [disabled]="!isSigned"
+    [mat-dialog-close]="isSigned"
+  >
+    Next
+  </button>
+</mat-dialog-actions>
